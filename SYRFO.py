@@ -16,6 +16,8 @@ YELLOW = "\033[93m"
 CYAN = "\033[96m"
 RESET = "\033[0m"
 
+TOOL_VERSION = "1.0"
+
 def banner():
     print(f"""{CYAN}
    ███████╗██╗   ██╗██████╗ ███████╗ ██████╗ 
@@ -25,6 +27,7 @@ def banner():
    ███████║   ██║   ██║  ██║██║     ╚██████╔╝
    ╚══════╝   ╚═╝   ╚═╝  ╚═╝╚═╝      ╚═════╝ 
         [ Advanced Subdomain Fuzzing Tool ]
+        [ Version: {TOOL_VERSION} ]
 {RESET}""")
 
 def check_subdomain(sub, domain, timeout):
@@ -40,16 +43,22 @@ def check_subdomain(sub, domain, timeout):
         return {"success": False, "error": "Other"}
 
 def main():
-    banner()
-    
     parser = argparse.ArgumentParser(description="SYRFO: Professional Advanced Subdomain Enumeration Tool")
-    parser.add_argument("-u", "--domain", required=True, help="Target domain to scan (e.g., syriatalk.org)")
+    parser.add_argument("-u", "--domain", help="Target domain to scan (e.g., syriatalk.org)")
     parser.add_argument("-w", "--wordlist", default="subdomains.txt", help="Path to wordlist file (default: subdomains.txt)")
     parser.add_argument("-t", "--threads", type=int, default=20, help="Number of concurrent threads (default: 20)")
     parser.add_argument("-o", "--output", default="syrfo_results.txt", help="File to save active results (default: syrfo_results.txt)")
     parser.add_argument("--timeout", type=int, default=3, help="Connection timeout in seconds (default: 3)")
+    parser.add_argument("-v", "--version", action="version", version=f"%(prog)s {TOOL_VERSION}", help="Show tool version and exit")
     
     args = parser.parse_args()
+
+    # التحقق من إدخال الدومين في حال لم يتم استخدام وسيط الإصدار
+    if not args.domain:
+        parser.print_help()
+        sys.exit(1)
+
+    banner()
 
     domain = args.domain
     wordlist_path = args.wordlist
