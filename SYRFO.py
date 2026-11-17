@@ -16,7 +16,7 @@ YELLOW = "\033[93m"
 CYAN = "\033[96m"
 RESET = "\033[0m"
 
-TOOL_VERSION = "1.0"
+TOOL_VERSION = "1.1"
 
 def banner():
     print(f"""{CYAN}
@@ -43,9 +43,13 @@ def check_subdomain(sub, domain, timeout):
         return {"success": False, "error": "Other"}
 
 def main():
+    # تحديد مسار مجلد الأداة الأصلي بغض النظر عن مكان تنفيذ الأمر
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    default_wordlist = os.path.join(script_dir, "subdomains.txt")
+
     parser = argparse.ArgumentParser(description="SYRFO: Professional Advanced Subdomain Enumeration Tool")
     parser.add_argument("-u", "--domain", help="Target domain to scan (e.g., syriatalk.org)")
-    parser.add_argument("-w", "--wordlist", default="subdomains.txt", help="Path to wordlist file (default: subdomains.txt)")
+    parser.add_argument("-w", "--wordlist", default=default_wordlist, help="Path to wordlist file (default: bundled subdomains.txt)")
     parser.add_argument("-t", "--threads", type=int, default=20, help="Number of concurrent threads (default: 20)")
     parser.add_argument("-o", "--output", default="syrfo_results.txt", help="File to save active results (default: syrfo_results.txt)")
     parser.add_argument("--timeout", type=int, default=3, help="Connection timeout in seconds (default: 3)")
@@ -53,7 +57,6 @@ def main():
     
     args = parser.parse_args()
 
-    # التحقق من إدخال الدومين في حال لم يتم استخدام وسيط الإصدار
     if not args.domain:
         parser.print_help()
         sys.exit(1)
@@ -127,7 +130,7 @@ def main():
     else:
         print(f"{RED}[-] No active subdomains found.{RESET}")
 
-    print("=" * 54)
+    print("=" * `54`)
 
 if __name__ == "__main__":
     main()
