@@ -43,7 +43,6 @@ def check_subdomain(sub, domain, timeout):
         return {"success": False, "error": "Other"}
 
 def main():
-    # تحديد مسار مجلد الأداة الأصلي بغض النظر عن مكان تنفيذ الأمر
     script_dir = os.path.dirname(os.path.abspath(__file__))
     default_wordlist = os.path.join(script_dir, "subdomains.txt")
 
@@ -130,7 +129,7 @@ def main():
     else:
         print(f"{RED}[-] No active subdomains found.{RESET}")
 
-    print("=" * `54`)
+    print("=" * 54)
 
 if __name__ == "__main__":
     main()
