@@ -1,3 +1,4 @@
+#!/usr/bin/env python3
 import os
 import sys
 import argparse
@@ -41,13 +42,12 @@ def check_subdomain(sub, domain, timeout):
 def main():
     banner()
     
-    parser = argparse.ArgumentParser(description="أداة SYRFO الاحترافية المتقدمة لفحص النطاقات الفرعية")
-    parser.add_argument("-u", "--domain", required=True, help="الموقع المراد فحصه (مثال: syriatalk.org)")
-    # تم تعديل القيمة الافتراضية لتصبح محلية ضمن مجلد الأداة مباشرة
-    parser.add_argument("-w", "--wordlist", default="subdomains.txt", help="مسار ملف القائمة (افتراضي: subdomains.txt)")
-    parser.add_argument("-t", "--threads", type=int, default=20, help="عدد الخيوط للسرعة الفائقة (افتراضي: 20)")
-    parser.add_argument("-o", "--output", default="syrfo_results.txt", help="ملف حفظ النتائج النشطة (افتراضي: syrfo_results.txt)")
-    parser.add_argument("--timeout", type=int, default=3, help="مهلة الاتصال بالثواني (افتراضي: 3)")
+    parser = argparse.ArgumentParser(description="SYRFO: Professional Advanced Subdomain Enumeration Tool")
+    parser.add_argument("-u", "--domain", required=True, help="Target domain to scan (e.g., syriatalk.org)")
+    parser.add_argument("-w", "--wordlist", default="subdomains.txt", help="Path to wordlist file (default: subdomains.txt)")
+    parser.add_argument("-t", "--threads", type=int, default=20, help="Number of concurrent threads (default: 20)")
+    parser.add_argument("-o", "--output", default="syrfo_results.txt", help="File to save active results (default: syrfo_results.txt)")
+    parser.add_argument("--timeout", type=int, default=3, help="Connection timeout in seconds (default: 3)")
     
     args = parser.parse_args()
 
@@ -58,8 +58,8 @@ def main():
     timeout = args.timeout
 
     if not os.path.exists(wordlist_path):
-        print(f"{RED}[!] خطأ: ملف القائمة غير موجود في المسار الحالي: {wordlist_path}{RESET}")
-        print(f"{YELLOW}[*] تأكد من وجود ملف subdomains.txt في نفس مجلد الأداة.{RESET}")
+        print(f"{RED}[!] Error: Wordlist file not found at: {wordlist_path}{RESET}")
+        print(f"{YELLOW}[*] Make sure subdomains.txt exists in the tool's directory.{RESET}")
         sys.exit(1)
 
     with open(wordlist_path, "r", encoding="utf-8", errors="ignore") as f:
@@ -95,7 +95,7 @@ def main():
                     failed_count += 1
 
     except KeyboardInterrupt:
-        print(f"\n\n{YELLOW}[!] تم إيقاف الفحص يدوياً بواسطة المستخدم (Ctrl + C).{RESET}")
+        print(f"\n\n{YELLOW}[!] Scan interrupted manually by user (Ctrl + C).{RESET}")
 
     if active_results:
         with open(output_file, "w", encoding="utf-8") as out:
@@ -103,20 +103,20 @@ def main():
                 out.write(f"{res['url']} (Status: {res['status']})\n")
 
     print("\n" + "=" * 54)
-    print(f"{CYAN}               [ تقرير النتائج النهائية ]              {RESET}")
+    print(f"{CYAN}               [ Final Results Report ]              {RESET}")
     print("=" * 54)
-    print(f"[*] إجمالي المحاولات المفحوصة : {completed_count} من {total_subs}")
-    print(f"[*] النطاقات النشطة المكتشفة : {GREEN}{len(active_results)}{RESET}")
-    print(f"[*] النطاقات غير المتاحة    : {failed_count}")
+    print(f"[*] Total Checked Attempts : {completed_count} of {total_subs}")
+    print(f"[*] Active Subdomains Found: {GREEN}{len(active_results)}{RESET}")
+    print(f"[*] Unavailable Subdomains : {failed_count}")
     print("-" * 54)
 
     if active_results:
-        print(f"{GREEN}[+] قائمة الروابط النشطة:{RESET}")
+        print(f"{GREEN}[+] Active Links List:{RESET}")
         for res in active_results:
             print(f"    {GREEN}• {res['url']}  (Status: {res['status']}){RESET}")
-        print(f"\n{CYAN}[*] تم حفظ النتائج بنجاح في الملف: {output_file}{RESET}")
+        print(f"\n{CYAN}[*] Results successfully saved to: {output_file}{RESET}")
     else:
-        print(f"{RED}[-] لم يتم العثور على أي نطاقات فرعية نشطة.{RESET}")
+        print(f"{RED}[-] No active subdomains found.{RESET}")
 
     print("=" * 54)
 
